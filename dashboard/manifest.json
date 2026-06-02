@@ -1,0 +1,12 @@
+{
+  "name": "hermes-ios",
+  "label": "iOS App",
+  "description": "Companion iOS app — native terminal-style chat for Hermes",
+  "icon": "Smartphone",
+  "version": "1.0.0",
+  "tab": {
+    "path": "/hermes-ios",
+    "position": "end"
+  },
+  "entry": "dist/index.js"
+}

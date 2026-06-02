@@ -1,0 +1,5 @@
+name: hermes-ios
+version: "1.0.0"
+description: "iOS companion app for Hermes — native terminal-style chat interface that connects to your Hermes instance via WebSocket. Build with Flutter and run on any iPhone."
+author: marcotavares
+kind: companion
