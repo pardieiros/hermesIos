@@ -61,7 +61,15 @@ class HermesService extends ChangeNotifier {
     _errorMessage = null;
 
     try {
-      _ws = await WebSocket.connect(settings.wsUrl);
+      _ws = await WebSocket.connect(
+        settings.wsUrl,
+        headers: {
+          // ngrok free tier blocks non-browser WebSocket upgrades with 403.
+          // This header bypasses the interstitial — harmless on other servers.
+          'ngrok-skip-browser-warning': 'true',
+          'User-Agent': 'HermesIOS/1.0',
+        },
+      );
       _ws!.pingInterval = const Duration(seconds: 20);
 
       _sub = _ws!.listen(
