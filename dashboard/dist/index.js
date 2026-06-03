@@ -339,7 +339,7 @@
               e("div", { style: S.stepNum }, "2"),
               e("div", { style: S.stepText },
                 "Open the app on your iPhone. Enter the host ",
-                e("span", { style: S.code }, host),
+                e("span", { style: S.code }, serverIp || browserHost),
                 ", port ",
                 e("span", { style: S.code }, port),
                 ", and paste your session token."
