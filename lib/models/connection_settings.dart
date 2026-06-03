@@ -13,7 +13,15 @@ class ConnectionSettings {
 
   String get wsUrl {
     final scheme = useHttps ? 'wss' : 'ws';
-    return '$scheme://$host:$port/api/ws?token=${Uri.encodeComponent(token)}';
+    // Use Uri constructor with queryParameters so Dart handles all
+    // special characters in the token correctly (%, #, &, etc.)
+    return Uri(
+      scheme: scheme,
+      host: host,
+      port: port,
+      path: '/api/ws',
+      queryParameters: {'token': token},
+    ).toString();
   }
 
   String get httpUrl {

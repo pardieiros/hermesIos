@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show WebSocket;
 
 import 'package:flutter/foundation.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../models/chat_message.dart';
 import '../models/connection_settings.dart';
@@ -25,7 +25,7 @@ class ApprovalRequest {
 }
 
 class HermesService extends ChangeNotifier {
-  WebSocketChannel? _channel;
+  WebSocket? _ws;
   StreamSubscription? _sub;
   ConnectionSettings? _settings;
 
@@ -61,14 +61,14 @@ class HermesService extends ChangeNotifier {
     _errorMessage = null;
 
     try {
-      final uri = Uri.parse(settings.wsUrl);
-      _channel = WebSocketChannel.connect(uri);
-      await _channel!.ready;
+      _ws = await WebSocket.connect(settings.wsUrl);
+      _ws!.pingInterval = const Duration(seconds: 20);
 
-      _sub = _channel!.stream.listen(
+      _sub = _ws!.listen(
         _onMessage,
         onError: _onError,
         onDone: _onDone,
+        cancelOnError: false,
       );
     } catch (e) {
       _errorMessage = e.toString();
@@ -78,9 +78,9 @@ class HermesService extends ChangeNotifier {
 
   Future<void> disconnect() async {
     await _sub?.cancel();
-    await _channel?.sink.close();
+    await _ws?.close();
     _sub = null;
-    _channel = null;
+    _ws = null;
     _sessionId = null;
     _streamingMessage = null;
     _pendingRequests.forEach((_, c) => c.completeError('disconnected'));
@@ -394,13 +394,13 @@ class HermesService extends ChangeNotifier {
   }
 
   Future<dynamic> _request(String method, Map<String, dynamic> params) {
-    if (_channel == null) {
+    if (_ws == null) {
       return Future.error('not connected');
     }
     final id = 'r${++_reqId}';
     final completer = Completer<dynamic>();
     _pendingRequests[id] = completer;
-    _channel!.sink.add(jsonEncode({
+    _ws!.add(jsonEncode({
       'jsonrpc': '2.0',
       'id': id,
       'method': method,

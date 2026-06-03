@@ -225,10 +225,14 @@
         .catch(function (err) { setError(String(err)); });
     }, []);
 
-    const host = window.location.hostname;
+    const browserHost = window.location.hostname;
     const port = window.location.port || (window.location.protocol === "https:" ? "443" : "80");
     const token = window.__HERMES_SESSION_TOKEN__ || "";
-    const isConnected = status && !error;
+    const isLoopback = browserHost === "localhost" || browserHost === "127.0.0.1";
+    // If the browser is on localhost it may be SSH-tunnelled — the iPhone
+    // needs the actual LAN/VPN IP. We extract it from the status API or
+    // show a clear warning.
+    const serverIp = (status && status.hostname) || (isLoopback ? null : browserHost);
 
     return e("div", { style: S.page },
       // Header
@@ -246,8 +250,33 @@
         // Connection details card
         e("div", { style: S.card },
           e("div", { style: S.cardTitle }, "Connection Details"),
-          e(InfoRow, { label: "Host", value: host }),
-          e(InfoRow, { label: "Port", value: port }),
+
+          // Warn when accessed via localhost — iPhone can't use that
+          isLoopback && e("div", { style: {
+            background: "rgba(255,215,0,0.08)",
+            border: "1px solid rgba(255,215,0,0.25)",
+            borderRadius: "8px",
+            padding: "10px 14px",
+            fontSize: "12px",
+            color: "#FFD700",
+            marginBottom: "14px",
+          }},
+            "⚠ Dashboard accessed via localhost — your iPhone needs the real server IP. " +
+            "Run: ",
+            e("span", { style: S.code }, "hermes dashboard --host 0.0.0.0 --insecure"),
+            " then open the dashboard via the server IP (e.g. http://192.168.x.x:9119)."
+          ),
+
+          e(InfoRow, {
+            label: "Host (browser)",
+            value: browserHost,
+          }),
+          serverIp && !isLoopback && e(InfoRow, {
+            label: "Host (for iPhone)",
+            value: serverIp,
+            copyValue: serverIp,
+          }),
+          e(InfoRow, { label: "Port", value: port, copyValue: port }),
           e(InfoRow, {
             label: "Protocol",
             value: window.location.protocol === "https:" ? "WSS (secure)" : "WS",
