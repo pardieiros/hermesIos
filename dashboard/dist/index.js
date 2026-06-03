@@ -185,13 +185,34 @@
     },
   };
 
-  // ── Copy helper ──────────────────────────────────────────────────────
+  // ── Copy helper (works on HTTP, not just HTTPS) ──────────────────────
+  function copyToClipboard(text) {
+    // Modern API — only available in secure contexts (HTTPS / localhost)
+    if (navigator.clipboard && window.isSecureContext) {
+      return navigator.clipboard.writeText(text);
+    }
+    // Fallback: create a hidden textarea, select it, execCommand
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.cssText = "position:fixed;top:-9999px;left:-9999px;opacity:0";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    document.body.removeChild(ta);
+    return Promise.resolve();
+  }
+
   function CopyButton({ text }) {
     const [copied, setCopied] = useState(false);
     const copy = function () {
-      try { navigator.clipboard.writeText(text); } catch (_) {}
-      setCopied(true);
-      setTimeout(function () { setCopied(false); }, 1500);
+      copyToClipboard(text).then(function () {
+        setCopied(true);
+        setTimeout(function () { setCopied(false); }, 1500);
+      }).catch(function () {
+        setCopied(true);
+        setTimeout(function () { setCopied(false); }, 1500);
+      });
     };
     return e("button", {
       style: {
