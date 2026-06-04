@@ -37,11 +37,7 @@
 	<string>Hermes can read and create calendar events on your behalf.</string>
 	<key>NSRemindersUsageDescription</key>
 	<string>Hermes can create reminders on your behalf.</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>fetch</string>
-		<string>processing</string>
-	</array>
+
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
