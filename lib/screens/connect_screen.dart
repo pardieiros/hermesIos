@@ -109,14 +109,22 @@ class _ConnectScreenState extends State<ConnectScreen> {
               Row(
                 children: [
                   Container(
-                    width: 48,
-                    height: 48,
+                    width: 56,
+                    height: 56,
                     decoration: BoxDecoration(
-                      color: AppTheme.accent,
-                      borderRadius: BorderRadius.circular(12),
+                      color: AppTheme.bg,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                          color: AppTheme.accent.withValues(alpha: 0.4),
+                          width: 1.5),
                     ),
-                    child: const Icon(Icons.psychology,
-                        color: Colors.black, size: 28),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      'assets/hermes_logo.png',
+                      fit: BoxFit.cover,
+                      color: AppTheme.accent,
+                      colorBlendMode: BlendMode.modulate,
+                    ),
                   ),
                   const SizedBox(width: 14),
                   Column(

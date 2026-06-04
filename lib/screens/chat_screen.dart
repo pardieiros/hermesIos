@@ -164,11 +164,18 @@ class _ChatScreenState extends State<ChatScreen> with WidgetsBindingObserver {
       leading: Container(
         margin: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: AppTheme.accent.withValues(alpha: 0.15),
+          color: AppTheme.bg,
           borderRadius: BorderRadius.circular(8),
+          border: Border.all(
+              color: AppTheme.accent.withValues(alpha: 0.35), width: 1),
         ),
-        child:
-            const Icon(Icons.psychology, color: AppTheme.accent, size: 20),
+        clipBehavior: Clip.antiAlias,
+        child: Image.asset(
+          'assets/hermes_logo.png',
+          fit: BoxFit.cover,
+          color: AppTheme.accent,
+          colorBlendMode: BlendMode.modulate,
+        ),
       ),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

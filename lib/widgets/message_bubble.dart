@@ -102,11 +102,18 @@ class _MessageBubbleState extends State<MessageBubble> {
             height: 28,
             margin: const EdgeInsets.only(right: 10, top: 2),
             decoration: BoxDecoration(
-              color: AppTheme.accent.withValues(alpha: 0.2),
+              color: AppTheme.bg,
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                  color: AppTheme.accent.withValues(alpha: 0.35), width: 1),
             ),
-            child: const Icon(Icons.psychology,
-                color: AppTheme.accent, size: 16),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              'assets/hermes_logo.png',
+              fit: BoxFit.cover,
+              color: AppTheme.accent,
+              colorBlendMode: BlendMode.modulate,
+            ),
           ),
           Expanded(
             child: Column(
